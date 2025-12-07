@@ -1,7 +1,7 @@
 {
     "tournamentName": "БУРГЕР ДУО",
     "seasonName": "Сезон 1",
-    "eventDateText": "24 Октября",
+    "eventDateText": "12 декабря 2025",
     
     "links": {
         "discord": "https://discord.gg/ваш-канал",
@@ -10,8 +10,8 @@
 
     "status": {
         "registrationOpen": true,
-        "deadlineIso": "2025-10-24T18:00:00",
-        "spotsLeft": 4,
+        "deadlineIso": "2025-12-11T18:00:00",
+        "spotsLeft": 16,
         "totalSpots": 16
     },
 
