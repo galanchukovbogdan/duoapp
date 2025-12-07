@@ -1,0 +1,23 @@
+{
+    "tournamentName": "[ТУРНИР]",
+    "seasonName": "Сезон 1",
+    "eventDateText": "24 Октября",
+    
+    "links": {
+        "discord": "https://discord.gg/ваш-канал",
+        "googleForm": "https://docs.google.com/forms/d/e/1FAIpQLScp3XxocuP-_QgOytbMIBXwanS5hXYlS_lfEXrFoPgFHR-NTg/viewform?embedded=true"
+    },
+
+    "status": {
+        "registrationOpen": true,
+        "deadlineIso": "2025-10-24T18:00:00",
+        "spotsLeft": 4,
+        "totalSpots": 16
+    },
+
+    "messages": {
+        "heroTitle": "Докажите мастерство",
+        "heroSubtitle": "Битва стратегий и командного духа. Никакого хаоса — только честная борьба.",
+        "spotsAlert": "Осталось мест:"
+    }
+}
