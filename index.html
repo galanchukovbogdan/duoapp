@@ -73,44 +73,100 @@
         html {
             scroll-behavior: smooth;
         }
+        
+        /* Анимация пульсации для важных кнопок */
+        @keyframes subtle-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(217, 119, 6, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
+        }
+        .animate-subtle-pulse {
+            animation: subtle-pulse 2s infinite;
+        }
+        
+        /* Discord Floating Button */
+        .discord-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+        .discord-float:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
+
+    <!-- Floating Discord Button -->
+    <a href="#" target="_blank" class="discord-float bg-[#5865F2] text-white p-3 rounded-full shadow-lg flex items-center gap-2 hover:bg-[#4752C4] group">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.085 2.176 2.419 0 1.334-.966 2.419-2.176 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.085 2.176 2.419 0 1.334-.966 2.419-2.176 2.419z"/>
+        </svg>
+        <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap text-sm font-bold">Чат участников</span>
+    </a>
 
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-stone-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex-shrink-0 flex items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
                     <span class="font-bold text-xl tracking-tight text-stone-800">🏆 [ТУРНИР]</span>
+                    <span class="hidden sm:inline-block bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full font-bold">
+                        Осталось мест: 4
+                    </span>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <!-- ЯКОРЯ В МЕНЮ (Работают через функцию scrollToSection) -->
                     <button onclick="scrollToSection('about')" class="text-stone-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">О турнире</button>
                     <button onclick="scrollToSection('format')" class="text-stone-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Формат</button>
                     <button onclick="scrollToSection('scoring')" class="text-stone-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Рейтинг</button>
                     <button onclick="scrollToSection('join')" class="text-stone-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Участие</button>
                 </div>
-                <!-- Кнопка в меню теперь открывает модальное окно -->
-                <button onclick="openRegModal()" class="accent-bg text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-amber-700 transition-colors shadow-md">
+                <button onclick="openRegModal()" class="accent-bg text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-amber-700 transition-colors shadow-md animate-subtle-pulse">
                     Регистрация
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Countdown -->
     <header class="relative bg-stone-900 text-stone-50 overflow-hidden">
         <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-        <div class="relative max-w-5xl mx-auto px-4 py-24 sm:px-6 lg:px-8 flex flex-col items-center text-center">
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+        <div class="relative max-w-5xl mx-auto px-4 py-16 sm:px-6 lg:px-8 flex flex-col items-center text-center">
+            
+            <div class="inline-block bg-white/10 backdrop-blur-md px-4 py-1 rounded-full text-amber-400 font-bold text-sm mb-4 border border-amber-500/30">
+                🔴 Регистрация открыта до 24 октября
+            </div>
+
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
                 Докажите мастерство в <span class="text-amber-500">[ТУРНИР]</span>
             </h1>
-            <p class="mt-4 max-w-2xl text-xl text-stone-300">
-                Битва стратегий и командного духа. Никакого хаоса — только честная борьба в заранее проработанной системе.
+            <p class="mt-2 max-w-2xl text-xl text-stone-300 mb-8">
+                Битва стратегий и командного духа. Никакого хаоса — только честная борьба.
             </p>
-            <div class="mt-10 flex flex-col sm:flex-row gap-4">
-                <!-- Главная кнопка теперь открывает модальное окно -->
+
+            <!-- Countdown Timer -->
+            <div class="grid grid-cols-4 gap-4 mb-10 text-center">
+                <div class="bg-stone-800/80 p-3 rounded-lg border border-stone-700 min-w-[70px]">
+                    <div id="days" class="text-2xl md:text-3xl font-bold text-white">02</div>
+                    <div class="text-[10px] text-stone-400 uppercase">Дня</div>
+                </div>
+                <div class="bg-stone-800/80 p-3 rounded-lg border border-stone-700 min-w-[70px]">
+                    <div id="hours" class="text-2xl md:text-3xl font-bold text-white">14</div>
+                    <div class="text-[10px] text-stone-400 uppercase">Часа</div>
+                </div>
+                <div class="bg-stone-800/80 p-3 rounded-lg border border-stone-700 min-w-[70px]">
+                    <div id="minutes" class="text-2xl md:text-3xl font-bold text-white">25</div>
+                    <div class="text-[10px] text-stone-400 uppercase">Мин</div>
+                </div>
+                <div class="bg-stone-800/80 p-3 rounded-lg border border-stone-700 min-w-[70px]">
+                    <div id="seconds" class="text-2xl md:text-3xl font-bold text-amber-500">40</div>
+                    <div class="text-[10px] text-stone-400 uppercase">Сек</div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
                 <button onclick="openRegModal()" class="accent-bg text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-amber-700 transition-all shadow-lg transform hover:scale-105">
                     Зарегистрировать команду
                 </button>
@@ -120,6 +176,25 @@
             </div>
         </div>
     </header>
+
+    <!-- NEW: Discord Teammate Finder Section (High Funnel Value) -->
+    <section class="py-8 bg-blue-50 border-b border-blue-100">
+        <div class="max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-start gap-4">
+                <div class="bg-blue-100 p-3 rounded-full hidden sm:block">
+                    <svg class="w-8 h-8 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-stone-900">Нет команды? Не проблема!</h3>
+                    <p class="text-stone-600 text-sm">В нашем Discord в канале <span class="font-mono bg-white px-1 rounded border border-blue-200">#поиск-пати</span> прямо сейчас ищут игроков.</p>
+                </div>
+            </div>
+            <a href="#" target="_blank" class="w-full md:w-auto text-center px-6 py-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold rounded-lg transition-colors shadow-md flex items-center justify-center gap-2">
+                <span>Найти тиммейтов</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+        </div>
+    </section>
 
     <!-- Interactive Format Section -->
     <section id="format" class="py-16 bg-stone-100 border-y border-stone-200">
@@ -248,7 +323,6 @@
                 </div>
 
                 <!-- POPUP TRIGGER BUTTON -->
-                <!-- Эта кнопка теперь открывает модальное окно с формой -->
                 <button onclick="openRegModal()" class="inline-block w-full md:w-auto bg-white text-amber-700 px-8 py-4 rounded-xl text-lg font-bold hover:bg-stone-100 transition-colors shadow-lg transform hover:scale-105 cursor-pointer">
                     Подать заявку на участие
                 </button>
@@ -286,7 +360,6 @@
 
                     <!-- Iframe Container -->
                     <div class="bg-white flex-grow h-[85vh] md:h-[80vh] w-full relative">
-                        <!-- Добавлен параметр embedded=true для чистого вида -->
                         <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScp3XxocuP-_QgOytbMIBXwanS5hXYlS_lfEXrFoPgFHR-NTg/viewform?embedded=true" 
                                 class="absolute inset-0 w-full h-full border-none" 
                                 frameborder="0" marginheight="0" marginwidth="0">Загрузка…</iframe>
@@ -298,6 +371,29 @@
 
     <!-- Logic Script -->
     <script>
+        // --- COUNTDOWN LOGIC ---
+        function updateCountdown() {
+            // Set date to 3 days from now for demo purposes
+            const now = new Date();
+            const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3); 
+            
+            const diff = targetDate - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('days').innerText = days < 10 ? '0' + days : days;
+                document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
+                document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
         // --- TELEGRAM MINI APP INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             if (window.Telegram && window.Telegram.WebApp) {
@@ -316,13 +412,11 @@
         // --- Modal Logic (Popup) ---
         function openRegModal() {
             document.getElementById('regModal').classList.remove('hidden');
-            // Блокируем прокрутку основного сайта, пока открыто модальное окно
             document.body.style.overflow = 'hidden';
         }
 
         function closeRegModal() {
             document.getElementById('regModal').classList.add('hidden');
-            // Возвращаем прокрутку
             document.body.style.overflow = '';
         }
 
