@@ -3,107 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнир: Битва Стратегий</title>
+    <title>Турнир: Загрузка...</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Скрипт Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Custom Chart Container Styles */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 300px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-        /* Hide scrollbar for clean horizontal scrolling if needed internally */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        body {
-            background-color: #f5f5f4; /* stone-100 */
-            color: #44403c; /* stone-700 */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .accent-bg {
-            background-color: #d97706; /* amber-600 */
-        }
-        .accent-text {
-            color: #d97706;
-        }
-        .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        /* Table Styles */
-        .sim-table th {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #78716c;
-            font-weight: 600;
-            padding: 0.5rem;
-        }
-        .sim-table td {
-            padding: 0.25rem;
-        }
-        .rank-select {
-            width: 100%;
-            min-width: 40px;
-            padding: 2px;
-            font-size: 0.875rem;
-            border-radius: 0.25rem;
-            border: 1px solid #d6d3d1;
-            background-color: #fff;
-            text-align: center;
-        }
-        .rank-select:focus {
-            outline: none;
-            border-color: #d97706;
-        }
-        /* Плавная прокрутка для всей страницы */
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* Анимация пульсации для важных кнопок */
+        .chart-container { position: relative; width: 100%; height: 300px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body { background-color: #f5f5f4; color: #44403c; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .accent-bg { background-color: #d97706; }
+        .accent-text { color: #d97706; }
+        .sim-table th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #78716c; font-weight: 600; padding: 0.5rem; }
+        .sim-table td { padding: 0.25rem; }
+        .rank-select { width: 100%; min-width: 40px; padding: 2px; font-size: 0.875rem; border-radius: 0.25rem; border: 1px solid #d6d3d1; background-color: #fff; text-align: center; }
+        .rank-select:focus { outline: none; border-color: #d97706; }
+        html { scroll-behavior: smooth; }
         @keyframes subtle-pulse {
             0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.4); }
             70% { box-shadow: 0 0 0 10px rgba(217, 119, 6, 0); }
             100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
         }
-        .animate-subtle-pulse {
-            animation: subtle-pulse 2s infinite;
-        }
-        
-        /* Discord Floating Button */
-        .discord-float {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 40;
-            transition: all 0.3s ease;
-        }
-        .discord-float:hover {
-            transform: scale(1.1);
-        }
+        .animate-subtle-pulse { animation: subtle-pulse 2s infinite; }
+        .discord-float { position: fixed; bottom: 20px; right: 20px; z-index: 40; transition: all 0.3s ease; }
+        .discord-float:hover { transform: scale(1.1); }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
     <!-- Floating Discord Button -->
-    <a href="#" target="_blank" class="discord-float bg-[#5865F2] text-white p-3 rounded-full shadow-lg flex items-center gap-2 hover:bg-[#4752C4] group">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.085 2.176 2.419 0 1.334-.966 2.419-2.176 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.085 2.176 2.419 0 1.334-.966 2.419-2.176 2.419z"/>
-        </svg>
+    <a id="discord-float-link" href="#" target="_blank" class="discord-float bg-[#5865F2] text-white p-3 rounded-full shadow-lg flex items-center gap-2 hover:bg-[#4752C4] group">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.085 2.176 2.419 0 1.334-.966 2.419-2.176 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.085 2.176 2.419 0 1.334-.966 2.419-2.176 2.419z"/></svg>
         <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap text-sm font-bold">Чат участников</span>
     </a>
 
@@ -112,9 +43,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex-shrink-0 flex items-center gap-2">
-                    <span class="font-bold text-xl tracking-tight text-stone-800">🏆 [ТУРНИР]</span>
-                    <span class="hidden sm:inline-block bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full font-bold">
-                        Осталось мест: 4
+                    <span id="nav-title" class="font-bold text-xl tracking-tight text-stone-800">🏆 ...</span>
+                    <span id="nav-spots" class="hidden sm:inline-block bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full font-bold">
+                        ...
                     </span>
                 </div>
                 <div class="hidden md:flex space-x-8">
@@ -130,38 +61,38 @@
         </div>
     </nav>
 
-    <!-- Hero Section with Countdown -->
+    <!-- Hero Section -->
     <header class="relative bg-stone-900 text-stone-50 overflow-hidden">
         <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         <div class="relative max-w-5xl mx-auto px-4 py-16 sm:px-6 lg:px-8 flex flex-col items-center text-center">
             
             <div class="inline-block bg-white/10 backdrop-blur-md px-4 py-1 rounded-full text-amber-400 font-bold text-sm mb-4 border border-amber-500/30">
-                🔴 Регистрация открыта до 24 октября
+                <span id="hero-date-badge">🔴 Загрузка даты...</span>
             </div>
 
             <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
-                Докажите мастерство в <span class="text-amber-500">[ТУРНИР]</span>
+                <span id="hero-title-prefix"></span> <span id="hero-title-main" class="text-amber-500"></span>
             </h1>
-            <p class="mt-2 max-w-2xl text-xl text-stone-300 mb-8">
-                Битва стратегий и командного духа. Никакого хаоса — только честная борьба.
+            <p id="hero-subtitle" class="mt-2 max-w-2xl text-xl text-stone-300 mb-8">
+                ...
             </p>
 
             <!-- Countdown Timer -->
             <div class="grid grid-cols-4 gap-4 mb-10 text-center">
                 <div class="bg-stone-800/80 p-3 rounded-lg border border-stone-700 min-w-[70px]">
-                    <div id="days" class="text-2xl md:text-3xl font-bold text-white">02</div>
+                    <div id="days" class="text-2xl md:text-3xl font-bold text-white">-</div>
                     <div class="text-[10px] text-stone-400 uppercase">Дня</div>
                 </div>
                 <div class="bg-stone-800/80 p-3 rounded-lg border border-stone-700 min-w-[70px]">
-                    <div id="hours" class="text-2xl md:text-3xl font-bold text-white">14</div>
+                    <div id="hours" class="text-2xl md:text-3xl font-bold text-white">-</div>
                     <div class="text-[10px] text-stone-400 uppercase">Часа</div>
                 </div>
                 <div class="bg-stone-800/80 p-3 rounded-lg border border-stone-700 min-w-[70px]">
-                    <div id="minutes" class="text-2xl md:text-3xl font-bold text-white">25</div>
+                    <div id="minutes" class="text-2xl md:text-3xl font-bold text-white">-</div>
                     <div class="text-[10px] text-stone-400 uppercase">Мин</div>
                 </div>
                 <div class="bg-stone-800/80 p-3 rounded-lg border border-stone-700 min-w-[70px]">
-                    <div id="seconds" class="text-2xl md:text-3xl font-bold text-amber-500">40</div>
+                    <div id="seconds" class="text-2xl md:text-3xl font-bold text-amber-500">-</div>
                     <div class="text-[10px] text-stone-400 uppercase">Сек</div>
                 </div>
             </div>
@@ -177,7 +108,7 @@
         </div>
     </header>
 
-    <!-- NEW: Discord Teammate Finder Section (High Funnel Value) -->
+    <!-- NEW: Discord Teammate Finder Section -->
     <section class="py-8 bg-blue-50 border-b border-blue-100">
         <div class="max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="flex items-start gap-4">
@@ -189,7 +120,7 @@
                     <p class="text-stone-600 text-sm">В нашем Discord в канале <span class="font-mono bg-white px-1 rounded border border-blue-200">#поиск-пати</span> прямо сейчас ищут игроков.</p>
                 </div>
             </div>
-            <a href="#" target="_blank" class="w-full md:w-auto text-center px-6 py-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold rounded-lg transition-colors shadow-md flex items-center justify-center gap-2">
+            <a id="discord-section-link" href="#" target="_blank" class="w-full md:w-auto text-center px-6 py-3 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold rounded-lg transition-colors shadow-md flex items-center justify-center gap-2">
                 <span>Найти тиммейтов</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
             </a>
@@ -302,8 +233,7 @@
                     <div class="bg-white/10 p-4 rounded-lg backdrop-blur-md hover:bg-white/20 transition cursor-pointer">
                         <span class="block text-2xl font-bold opacity-50 mb-1">01</span>
                         <h4 class="font-bold">Discord</h4>
-                        <!-- !!! ВСТАВЬТЕ ССЫЛКУ НА ДИСКОРД НИЖЕ (вместо #) !!! -->
-                        <a href="#" target="_blank" class="text-xs opacity-80 underline hover:text-white">Ссылка на сервер</a>
+                        <a id="discord-card-link" href="#" target="_blank" class="text-xs opacity-80 underline hover:text-white">Ссылка на сервер</a>
                     </div>
                     <div class="bg-white/10 p-4 rounded-lg backdrop-blur-md">
                         <span class="block text-2xl font-bold opacity-50 mb-1">02</span>
@@ -333,7 +263,7 @@
     <!-- Footer -->
     <footer class="bg-stone-900 text-stone-400 py-8 border-t border-stone-800 mt-auto">
         <div class="max-w-6xl mx-auto px-4 text-center">
-            <p class="mb-2">© 2023 [НАЗВАНИЕ ТУРНИРА].</p>
+            <p id="footer-text" class="mb-2">© 2023 [ТУРНИР].</p>
         </div>
     </footer>
 
@@ -360,7 +290,7 @@
 
                     <!-- Iframe Container -->
                     <div class="bg-white flex-grow h-[85vh] md:h-[80vh] w-full relative">
-                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScp3XxocuP-_QgOytbMIBXwanS5hXYlS_lfEXrFoPgFHR-NTg/viewform?embedded=true" 
+                        <iframe id="google-form-iframe" src="" 
                                 class="absolute inset-0 w-full h-full border-none" 
                                 frameborder="0" marginheight="0" marginwidth="0">Загрузка…</iframe>
                     </div>
@@ -371,36 +301,88 @@
 
     <!-- Logic Script -->
     <script>
-        // --- COUNTDOWN LOGIC ---
-        function updateCountdown() {
-            // Set date to 3 days from now for demo purposes
-            const now = new Date();
-            const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3); 
-            
-            const diff = targetDate - now;
+        // --- 1. CONFIG LOADER ---
+        let tournamentConfig = null;
 
-            if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                document.getElementById('days').innerText = days < 10 ? '0' + days : days;
-                document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
-                document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
-                document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+        async function loadConfig() {
+            try {
+                // Добавляем timestamp, чтобы браузер не кешировал старую версию конфига
+                const response = await fetch('config.json?v=' + new Date().getTime());
+                if (!response.ok) throw new Error("Config not found");
+                
+                const config = await response.json();
+                tournamentConfig = config;
+                applyConfig(config);
+            } catch (error) {
+                console.error("Ошибка загрузки конфига:", error);
+                alert("Не удалось загрузить настройки турнира. Проверьте файл config.json");
             }
         }
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
 
-        // --- TELEGRAM MINI APP INIT ---
+        function applyConfig(cfg) {
+            // Заголовки
+            document.title = `${cfg.tournamentName} - ${cfg.seasonName}`;
+            document.getElementById('nav-title').textContent = cfg.tournamentName;
+            document.getElementById('nav-spots').textContent = `${cfg.messages.spotsAlert} ${cfg.status.spotsLeft}`;
+            document.getElementById('hero-title-prefix').textContent = cfg.messages.heroTitle;
+            document.getElementById('hero-title-main').textContent = cfg.tournamentName;
+            document.getElementById('hero-subtitle').textContent = cfg.messages.heroSubtitle;
+            document.getElementById('footer-text').textContent = `© ${new Date().getFullYear()} ${cfg.tournamentName}`;
+            
+            // Дата и бейдж
+            document.getElementById('hero-date-badge').textContent = `🔴 ${cfg.eventDateText}`;
+
+            // Ссылки
+            document.getElementById('discord-float-link').href = cfg.links.discord;
+            document.getElementById('discord-section-link').href = cfg.links.discord;
+            document.getElementById('discord-card-link').href = cfg.links.discord;
+            document.getElementById('google-form-iframe').src = cfg.links.googleForm;
+
+            // Запускаем таймер с новой датой
+            startCountdown(cfg.status.deadlineIso);
+        }
+
+        // --- 2. COUNTDOWN LOGIC ---
+        let timerInterval;
+
+        function startCountdown(deadlineIso) {
+            if (timerInterval) clearInterval(timerInterval);
+
+            function update() {
+                const now = new Date();
+                const targetDate = new Date(deadlineIso);
+                const diff = targetDate - now;
+
+                if (diff > 0) {
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    document.getElementById('days').innerText = days < 10 ? '0' + days : days;
+                    document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
+                    document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+                    document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+                } else {
+                    document.getElementById('seconds').innerText = "00";
+                    // Можно добавить логику "Регистрация закрыта"
+                }
+            }
+            timerInterval = setInterval(update, 1000);
+            update();
+        }
+
+        // --- 3. TELEGRAM & UI ---
         document.addEventListener('DOMContentLoaded', () => {
+            loadConfig(); // Загружаем настройки
+
             if (window.Telegram && window.Telegram.WebApp) {
                 const tg = window.Telegram.WebApp;
                 tg.ready(); 
                 tg.expand(); 
             }
+            // Init visualizer
+            updateLobbyViz();
         });
 
         // --- Navigation Logic ---
@@ -429,22 +411,21 @@
             const count = parseInt(teamSelect.value);
             lobbyGrid.innerHTML = '';
             
-            // Logic to determine visual representation of lobbies
             let lobbies = [];
             let message = '';
 
             if (count === 8) {
                 lobbies = [4, 4];
-                message = "2 полных лобби. Идеальный баланс. Каждый играет с каждым за 3-4 этапа.";
+                message = "2 полных лобби. Идеальный баланс.";
             } else if (count === 10) {
                 lobbies = [4, 4, 2];
-                message = "10 команд: Сетка хитрее. 2 полных лобби, а оставшиеся играют в ротации. Некоторые команды встретятся дважды, но система баллов это учтет.";
+                message = "10 команд: 2 полных лобби + ротация.";
             } else if (count === 12) {
                 lobbies = [4, 4, 4];
-                message = "12 команд: 3 полных лобби. Отличная ротация и разнообразие соперников.";
+                message = "12 команд: 3 полных лобби.";
             } else if (count === 16) {
                 lobbies = [4, 4, 4, 4];
-                message = "16 команд: Золотой стандарт. 4 лобби. Максимальная дистанция турнира в 4 этапа.";
+                message = "16 команд: Золотой стандарт.";
             }
 
             lobbies.forEach((size, index) => {
@@ -454,7 +435,7 @@
                 
                 const title = document.createElement('div');
                 title.className = 'font-bold text-stone-500 text-xs uppercase mb-1';
-                title.textContent = isPartial && count === 10 ? 'Ротация / Ожидание' : `Лобби ${index + 1}`;
+                title.textContent = isPartial && count === 10 ? 'Ротация' : `Лобби ${index + 1}`;
                 lobbyDiv.appendChild(title);
 
                 const slotsDiv = document.createElement('div');
@@ -467,7 +448,7 @@
                         slot.textContent = 'Team';
                     } else {
                         slot.className = 'h-8 border border-dashed border-stone-300 rounded flex items-center justify-center text-xs text-stone-400';
-                        slot.textContent = 'Пусто';
+                        slot.textContent = '...';
                     }
                     slotsDiv.appendChild(slot);
                 }
@@ -477,34 +458,18 @@
 
             formatExplanation.textContent = message;
         }
-
         teamSelect.addEventListener('change', updateLobbyViz);
 
-        // --- Constants & Data ---
-        // Имена для антуража
-        const TEAM_NAMES = [
-            "Alpha Squad", "Beta Rushers", "Gamma Ghouls", "Delta Force",
-            "Echo Base", "Fox Trot", "Golden Lions", "Heavy Metal",
-            "Iron Wall", "Jade Dragons", "Kilo Watts", "Lunar Tide",
-            "Mystic Arts", "Neon Riders", "Omega Point", "Phantom Ops"
-        ];
-
-        // Состояние симулятора (массив объектов)
+        // --- Scoring Simulator (Simplified) ---
+        const TEAM_NAMES = ["Alpha", "Beta", "Gamma", "Delta", "Echo", "Fox", "Gold", "Heavy", "Iron", "Jade", "Kilo", "Luna", "Mystic", "Neon", "Omega", "Phantom"];
         let teamsData = [];
-
-        // Коэффициенты и баллы (Default values)
         const POINTS = { 1: 4, 2: 3, 3: 2, 4: 1 };
         const COEFS = { 1: 1.0, 2: 1.2, 3: 1.4, 4: 1.6 };
 
-        // Инициализация данных
         function initTeams() {
             teamsData = TEAM_NAMES.map((name, index) => ({
-                id: index,
-                name: name,
-                r1: 4, r2: 4, r3: 4, r4: 4, // Default ranks (last place)
-                total: 0
+                id: index, name: name, r1: 4, r2: 4, r3: 4, r4: 4, total: 0
             }));
-            // Раскидаем немного случайных значений для интереса при старте
             randomizeData();
         }
 
@@ -519,140 +484,45 @@
 
         function calculateTotals() {
             teamsData.forEach(team => {
-                const s1 = POINTS[team.r1] * COEFS[1];
-                const s2 = POINTS[team.r2] * COEFS[2];
-                const s3 = POINTS[team.r3] * COEFS[3];
-                const s4 = POINTS[team.r4] * COEFS[4];
-                team.total = parseFloat((s1 + s2 + s3 + s4).toFixed(1));
+                team.total = parseFloat(((POINTS[team.r1]*COEFS[1]) + (POINTS[team.r2]*COEFS[2]) + (POINTS[team.r3]*COEFS[3]) + (POINTS[team.r4]*COEFS[4])).toFixed(1));
             });
         }
 
-        // --- Rendering ---
         const tbody = document.getElementById('teams-table-body');
-        
         function renderTable() {
             tbody.innerHTML = '';
-            
-            // Находим лидера для подсветки
             const maxScore = Math.max(...teamsData.map(t => t.total));
-
             teamsData.forEach((team, index) => {
                 const tr = document.createElement('tr');
-                tr.className = team.total === maxScore ? 'bg-amber-50' : 'hover:bg-stone-50 transition-colors';
-                
-                // Rank column (index + 1 because data is sorted)
-                const rankCell = `<td class="font-bold text-stone-500">${index + 1}</td>`;
-                
-                // Name column
-                const nameCell = `<td class="font-medium ${team.total === maxScore ? 'text-amber-700' : 'text-stone-800'}">${team.name}</td>`;
-                
-                // Input helper
-                const createSelect = (stage, val) => `
-                    <select onchange="updateTeamRank(${team.id}, ${stage}, this.value)" 
-                            class="rank-select ${val === 1 ? 'font-bold text-green-600 bg-green-50 border-green-200' : ''} 
-                                               ${val === 4 ? 'text-red-400' : ''}">
-                        <option value="1" ${val === 1 ? 'selected' : ''}>1</option>
-                        <option value="2" ${val === 2 ? 'selected' : ''}>2</option>
-                        <option value="3" ${val === 3 ? 'selected' : ''}>3</option>
-                        <option value="4" ${val === 4 ? 'selected' : ''}>4</option>
-                    </select>
-                `;
-
-                const cells = [
-                    createSelect(1, team.r1),
-                    createSelect(2, team.r2),
-                    createSelect(3, team.r3),
-                    createSelect(4, team.r4)
-                ];
-
-                const totalCell = `<td class="text-right font-bold ${team.total === maxScore ? 'text-amber-600 text-lg' : ''}">${team.total}</td>`;
-
-                tr.innerHTML = rankCell + nameCell + 
-                               cells.map((c, i) => `<td class="p-1 ${i===3 ? 'bg-amber-50/50' : ''}">${c}</td>`).join('') + 
-                               totalCell;
+                tr.className = team.total === maxScore ? 'bg-amber-50' : 'hover:bg-stone-50';
+                const createSelect = (s, v) => `<select onchange="updateTeamRank(${team.id}, ${s}, this.value)" class="rank-select"><option value="1" ${v==1?'selected':''}>1</option><option value="2" ${v==2?'selected':''}>2</option><option value="3" ${v==3?'selected':''}>3</option><option value="4" ${v==4?'selected':''}>4</option></select>`;
+                tr.innerHTML = `<td class="font-bold text-stone-500">${index+1}</td><td class="font-medium">${team.name}</td><td>${createSelect(1,team.r1)}</td><td>${createSelect(2,team.r2)}</td><td>${createSelect(3,team.r3)}</td><td class="bg-amber-50/50">${createSelect(4,team.r4)}</td><td class="text-right font-bold">${team.total}</td>`;
                 tbody.appendChild(tr);
             });
         }
 
-        // --- Actions ---
         window.updateTeamRank = function(id, stage, value) {
-            // Find team in array (unsorted logic needs ID lookup because order changes)
-            // Но мы сортируем сам массив, так что надо найти по ID
             const team = teamsData.find(t => t.id === id);
-            if (team) {
-                team[`r${stage}`] = parseInt(value);
-                // Пересчитываем только тоталы, но НЕ сортируем сразу, чтобы строка не убежала из-под мышки
-                calculateTotals();
-                // Обновляем только график и значение тотал в DOM (упрощенно - перерисуем таблицу без сортировки или с ней?)
-                // Лучше обновить текст тотала в строке, а сортировку делать по кнопке, иначе неудобно.
-                updateChart();
-                renderTable(); // Re-render to show updated total instantly (row might jump if we sorted constantly, but let's decide behavior)
-            }
+            if (team) { team[`r${stage}`] = parseInt(value); calculateTotals(); updateChart(); renderTable(); }
         };
 
-        window.updateAndSort = function() {
-            calculateTotals();
-            // Sort Descending
-            teamsData.sort((a, b) => b.total - a.total);
-            renderTable();
-            updateChart();
-        };
+        window.updateAndSort = function() { calculateTotals(); teamsData.sort((a, b) => b.total - a.total); renderTable(); updateChart(); };
+        window.randomizeResults = function() { randomizeData(); updateAndSort(); };
 
-        window.randomizeResults = function() {
-            randomizeData();
-            updateAndSort();
-        };
-
-        // --- Chart ---
         let chartInstance = null;
-
         function updateChart() {
             const ctx = document.getElementById('scoringChart').getContext('2d');
-            const labels = teamsData.map(t => t.name); // Already sorted if updateAndSort called
             const data = teamsData.map(t => t.total);
-
-            if (chartInstance) {
-                chartInstance.data.labels = labels;
-                chartInstance.data.datasets[0].data = data;
-                chartInstance.update();
-            } else {
+            if (chartInstance) { chartInstance.data.datasets[0].data = data; chartInstance.update(); } 
+            else {
                 chartInstance = new Chart(ctx, {
                     type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Баллы',
-                            data: data,
-                            backgroundColor: 'rgba(217, 119, 6, 0.6)', // amber-600
-                            borderColor: 'rgba(217, 119, 6, 1)',
-                            borderWidth: 1,
-                            borderRadius: 4
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y', // Horizontal Bar Chart is better for 16 names
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            x: { beginAtZero: true }
-                        }
-                    }
+                    data: { labels: teamsData.map(t => t.name), datasets: [{ label: 'Баллы', data: data, backgroundColor: 'rgba(217, 119, 6, 0.6)' }] },
+                    options: { indexAxis: 'y', maintainAspectRatio: false, plugins: { legend: { display: false } } }
                 });
             }
         }
-
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            initTeams();
-            calculateTotals();
-            teamsData.sort((a, b) => b.total - a.total); // Initial Sort
-            renderTable();
-            updateChart();
-            updateLobbyViz(); // Init Lobby Viz
-        });
+        initTeams(); updateAndSort();
 
     </script>
 </body>
