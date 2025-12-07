@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Турнир: Битва Стратегий</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- ДОБАВЛЕНО: Скрипт Telegram WebApp -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* Custom Chart Container Styles */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        /* Hide scrollbar for clean horizontal scrolling if needed internally */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        body {
+            background-color: #f5f5f4; /* stone-100 */
+            color: #44403c; /* stone-700 */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .accent-bg {
+            background-color: #d97706; /* amber-600 */
+        }
+        .accent-text {
+            color: #d97706;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        /* Table Styles */
+        .sim-table th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #78716c;
+            font-weight: 600;
+            padding: 0.5rem;
+        }
+        .sim-table td {
+            padding: 0.25rem;
+        }
+        .rank-select {
+            width: 100%;
+            min-width: 40px;
+            padding: 2px;
+            font-size: 0.875rem;
+            border-radius: 0.25rem;
+            border: 1px solid #d6d3d1;
+            background-color: #fff;
+            text-align: center;
+        }
+        .rank-select:focus {
+            outline: none;
+            border-color: #d97706;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="font-bold text-xl tracking-tight text-stone-800">🏆 [ТУРНИР]</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="scrollToSection('about')" class="text-stone-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">О турнире</button>
+                    <button onclick="scrollToSection('format')" class="text-stone-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Формат</button>
+                    <button onclick="scrollToSection('scoring')" class="text-stone-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Рейтинг</button>
+                    <button onclick="scrollToSection('join')" class="text-stone-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Участие</button>
+                </div>
+                <button onclick="scrollToSection('join')" class="accent-bg text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-amber-700 transition-colors shadow-md">
+                    Регистрация
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative bg-stone-900 text-stone-50 overflow-hidden">
+        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        <div class="relative max-w-5xl mx-auto px-4 py-24 sm:px-6 lg:px-8 flex flex-col items-center text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+                Докажите мастерство в <span class="text-amber-500">[ТУРНИР]</span>
+            </h1>
+            <p class="mt-4 max-w-2xl text-xl text-stone-300">
+                Битва стратегий и командного духа. Никакого хаоса — только честная борьба в заранее проработанной системе.
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row gap-4">
+                <button onclick="scrollToSection('join')" class="accent-bg text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-amber-700 transition-all shadow-lg transform hover:scale-105">
+                    Зарегистрировать команду
+                </button>
+                <button onclick="scrollToSection('about')" class="bg-stone-800 text-stone-200 border border-stone-600 px-8 py-4 rounded-xl text-lg font-medium hover:bg-stone-700 transition-all">
+                    Узнать подробности
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Interactive Format Section -->
+    <section id="format" class="py-16 bg-stone-100 border-y border-stone-200">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-stone-900 mb-4">Как работает формат матчей?</h2>
+                <p class="text-stone-600 mb-6">
+                    Главная «фишка» — гибкость. Мы играем 3–4 этапа. В каждом раунде ваша команда попадает в лобби из 4-х команд.
+                    <br><br>
+                    <strong>Боитесь "нечетного" количества команд?</strong> Не стоит. Попробуйте симулятор ниже, чтобы увидеть, как наша система адаптирует сетку под любое количество участников.
+                </p>
+            </div>
+            <!-- Format Visualizer -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
+                    <label for="team-count" class="font-bold text-stone-700 mr-4 mb-2 sm:mb-0">
+                        Сколько команд зарегистрировалось?
+                    </label>
+                    <select id="team-count" class="bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block p-2.5">
+                        <option value="16" selected>16 Команд (Полная сетка)</option>
+                        <option value="12">12 Команд</option>
+                        <option value="10">10 Команд</option>
+                        <option value="8">8 Команд</option>
+                    </select>
+                </div>
+                <div id="lobby-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 transition-all duration-500 ease-in-out">
+                    <!-- Dynamic Content will appear here -->
+                </div>
+                <div id="format-explanation" class="mt-6 p-4 bg-blue-50 text-blue-800 rounded-lg text-sm border border-blue-100 flex items-start">
+                    <span class="text-xl mr-3">ℹ️</span>
+                    <p>Текст пояснения...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Scoring Section -->
+    <section id="scoring" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-900">Симулятор Рейтинга (16 команд)</h2>
+                <p class="text-stone-600 max-w-2xl mx-auto">
+                    Попробуйте распределить места для всех 16 команд. Нажмите "Обновить", чтобы увидеть, как меняется турнирная таблица.
+                    <br><span class="text-xs text-stone-400">Данные: 1 место = 4 очка, 2 = 3, 3 = 2, 4 = 1. Коэффициенты этапов: x1.0, x1.2, x1.4, x1.6.</span>
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                
+                <!-- Table Controls & Input -->
+                <div class="lg:col-span-2 bg-stone-50 p-6 rounded-2xl border border-stone-200 shadow-inner overflow-hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg text-stone-800">Ввод результатов</h3>
+                        <div class="flex gap-2">
+                            <button onclick="randomizeResults()" class="text-xs bg-stone-200 hover:bg-stone-300 text-stone-700 px-3 py-1 rounded transition-colors">
+                                🎲 Случайно
+                            </button>
+                            <button onclick="updateAndSort()" class="text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded transition-colors shadow-sm">
+                                🔄 Обновить и Сортировать
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left sim-table">
+                            <thead>
+                                <tr class="border-b border-stone-200">
+                                    <th class="w-8">#</th>
+                                    <th>Команда</th>
+                                    <th class="text-center w-16">Эт 1<br><span class="text-[10px] opacity-70">x1.0</span></th>
+                                    <th class="text-center w-16">Эт 2<br><span class="text-[10px] opacity-70">x1.2</span></th>
+                                    <th class="text-center w-16">Эт 3<br><span class="text-[10px] opacity-70">x1.4</span></th>
+                                    <th class="text-center w-16 text-amber-700 bg-amber-50">Эт 4<br><span class="text-[10px] opacity-70">x1.6</span></th>
+                                    <th class="text-right w-20">Итог</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teams-table-body" class="text-sm text-stone-700 divide-y divide-stone-100">
+                                <!-- Rows generated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Chart & Stats -->
+                <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-lg sticky top-24">
+                    <h3 class="font-bold text-stone-800 mb-4 text-center">График Лидеров</h3>
+                    <div class="chart-container">
+                        <canvas id="scoringChart"></canvas>
+                    </div>
+                    <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100 text-xs text-blue-800">
+                        <p><strong>Инсайт:</strong> При плотной борьбе побеждает не тот, кто один раз занял ТОП-1, а тот, кто избегал 4-х мест на поздних этапах.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-400 py-8 border-t border-stone-800 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="mb-2">© 2023 [НАЗВАНИЕ ТУРНИРА].</p>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // --- TELEGRAM MINI APP INIT ---
+        // Инициализация приложения Телеграм
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.ready(); // Сообщаем Телеграму, что приложение готово
+                tg.expand(); // Разворачиваем на весь экран
+                
+                // Опционально: красим хедер в цвет темы Телеграм
+                // tg.setHeaderColor(tg.themeParams.bg_color || '#ffffff');
+            }
+        });
+
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) { element.scrollIntoView({ behavior: 'smooth' }); }
+        }
+
+        // --- Format Visualizer Logic (RESTORED) ---
+        const teamSelect = document.getElementById('team-count');
+        const lobbyGrid = document.getElementById('lobby-grid');
+        const formatExplanation = document.getElementById('format-explanation').querySelector('p');
+
+        function updateLobbyViz() {
+            const count = parseInt(teamSelect.value);
+            lobbyGrid.innerHTML = '';
+            
+            // Logic to determine visual representation of lobbies
+            let lobbies = [];
+            let message = '';
+
+            if (count === 8) {
+                lobbies = [4, 4];
+                message = "2 полных лобби. Идеальный баланс. Каждый играет с каждым за 3-4 этапа.";
+            } else if (count === 10) {
+                lobbies = [4, 4, 2];
+                message = "10 команд: Сетка хитрее. 2 полных лобби, а оставшиеся играют в ротации. Некоторые команды встретятся дважды, но система баллов это учтет.";
+            } else if (count === 12) {
+                lobbies = [4, 4, 4];
+                message = "12 команд: 3 полных лобби. Отличная ротация и разнообразие соперников.";
+            } else if (count === 16) {
+                lobbies = [4, 4, 4, 4];
+                message = "16 команд: Золотой стандарт. 4 лобби. Максимальная дистанция турнира в 4 этапа.";
+            }
+
+            lobbies.forEach((size, index) => {
+                const isPartial = size < 4;
+                const lobbyDiv = document.createElement('div');
+                lobbyDiv.className = `p-4 rounded-xl border-2 flex flex-col gap-2 ${isPartial ? 'border-amber-200 bg-amber-50' : 'border-stone-200 bg-white'}`;
+                
+                const title = document.createElement('div');
+                title.className = 'font-bold text-stone-500 text-xs uppercase mb-1';
+                title.textContent = isPartial && count === 10 ? 'Ротация / Ожидание' : `Лобби ${index + 1}`;
+                lobbyDiv.appendChild(title);
+
+                const slotsDiv = document.createElement('div');
+                slotsDiv.className = 'grid grid-cols-2 gap-2';
+                
+                for(let i=0; i<4; i++) {
+                    const slot = document.createElement('div');
+                    if (i < size) {
+                        slot.className = 'h-8 bg-stone-200 rounded flex items-center justify-center text-xs font-bold text-stone-600';
+                        slot.textContent = 'Team';
+                    } else {
+                        slot.className = 'h-8 border border-dashed border-stone-300 rounded flex items-center justify-center text-xs text-stone-400';
+                        slot.textContent = 'Пусто';
+                    }
+                    slotsDiv.appendChild(slot);
+                }
+                lobbyDiv.appendChild(slotsDiv);
+                lobbyGrid.appendChild(lobbyDiv);
+            });
+
+            formatExplanation.textContent = message;
+        }
+
+        teamSelect.addEventListener('change', updateLobbyViz);
+
+        // --- Constants & Data ---
+        // Имена для антуража
+        const TEAM_NAMES = [
+            "Alpha Squad", "Beta Rushers", "Gamma Ghouls", "Delta Force",
+            "Echo Base", "Fox Trot", "Golden Lions", "Heavy Metal",
+            "Iron Wall", "Jade Dragons", "Kilo Watts", "Lunar Tide",
+            "Mystic Arts", "Neon Riders", "Omega Point", "Phantom Ops"
+        ];
+
+        // Состояние симулятора (массив объектов)
+        let teamsData = [];
+
+        // Коэффициенты и баллы (Default values)
+        const POINTS = { 1: 4, 2: 3, 3: 2, 4: 1 };
+        const COEFS = { 1: 1.0, 2: 1.2, 3: 1.4, 4: 1.6 };
+
+        // Инициализация данных
+        function initTeams() {
+            teamsData = TEAM_NAMES.map((name, index) => ({
+                id: index,
+                name: name,
+                r1: 4, r2: 4, r3: 4, r4: 4, // Default ranks (last place)
+                total: 0
+            }));
+            // Раскидаем немного случайных значений для интереса при старте
+            randomizeData();
+        }
+
+        function randomizeData() {
+            teamsData.forEach(team => {
+                team.r1 = Math.floor(Math.random() * 4) + 1;
+                team.r2 = Math.floor(Math.random() * 4) + 1;
+                team.r3 = Math.floor(Math.random() * 4) + 1;
+                team.r4 = Math.floor(Math.random() * 4) + 1;
+            });
+        }
+
+        function calculateTotals() {
+            teamsData.forEach(team => {
+                const s1 = POINTS[team.r1] * COEFS[1];
+                const s2 = POINTS[team.r2] * COEFS[2];
+                const s3 = POINTS[team.r3] * COEFS[3];
+                const s4 = POINTS[team.r4] * COEFS[4];
+                team.total = parseFloat((s1 + s2 + s3 + s4).toFixed(1));
+            });
+        }
+
+        // --- Rendering ---
+        const tbody = document.getElementById('teams-table-body');
+        
+        function renderTable() {
+            tbody.innerHTML = '';
+            
+            // Находим лидера для подсветки
+            const maxScore = Math.max(...teamsData.map(t => t.total));
+
+            teamsData.forEach((team, index) => {
+                const tr = document.createElement('tr');
+                tr.className = team.total === maxScore ? 'bg-amber-50' : 'hover:bg-stone-50 transition-colors';
+                
+                // Rank column (index + 1 because data is sorted)
+                const rankCell = `<td class="font-bold text-stone-500">${index + 1}</td>`;
+                
+                // Name column
+                const nameCell = `<td class="font-medium ${team.total === maxScore ? 'text-amber-700' : 'text-stone-800'}">${team.name}</td>`;
+                
+                // Input helper
+                const createSelect = (stage, val) => `
+                    <select onchange="updateTeamRank(${team.id}, ${stage}, this.value)" 
+                            class="rank-select ${val === 1 ? 'font-bold text-green-600 bg-green-50 border-green-200' : ''} 
+                                               ${val === 4 ? 'text-red-400' : ''}">
+                        <option value="1" ${val === 1 ? 'selected' : ''}>1</option>
+                        <option value="2" ${val === 2 ? 'selected' : ''}>2</option>
+                        <option value="3" ${val === 3 ? 'selected' : ''}>3</option>
+                        <option value="4" ${val === 4 ? 'selected' : ''}>4</option>
+                    </select>
+                `;
+
+                const cells = [
+                    createSelect(1, team.r1),
+                    createSelect(2, team.r2),
+                    createSelect(3, team.r3),
+                    createSelect(4, team.r4)
+                ];
+
+                const totalCell = `<td class="text-right font-bold ${team.total === maxScore ? 'text-amber-600 text-lg' : ''}">${team.total}</td>`;
+
+                tr.innerHTML = rankCell + nameCell + 
+                               cells.map((c, i) => `<td class="p-1 ${i===3 ? 'bg-amber-50/50' : ''}">${c}</td>`).join('') + 
+                               totalCell;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Actions ---
+        window.updateTeamRank = function(id, stage, value) {
+            // Find team in array (unsorted logic needs ID lookup because order changes)
+            // Но мы сортируем сам массив, так что надо найти по ID
+            const team = teamsData.find(t => t.id === id);
+            if (team) {
+                team[`r${stage}`] = parseInt(value);
+                // Пересчитываем только тоталы, но НЕ сортируем сразу, чтобы строка не убежала из-под мышки
+                calculateTotals();
+                // Обновляем только график и значение тотал в DOM (упрощенно - перерисуем таблицу без сортировки или с ней?)
+                // Лучше обновить текст тотала в строке, а сортировку делать по кнопке, иначе неудобно.
+                updateChart();
+                renderTable(); // Re-render to show updated total instantly (row might jump if we sorted constantly, but let's decide behavior)
+            }
+        };
+
+        window.updateAndSort = function() {
+            calculateTotals();
+            // Sort Descending
+            teamsData.sort((a, b) => b.total - a.total);
+            renderTable();
+            updateChart();
+        };
+
+        window.randomizeResults = function() {
+            randomizeData();
+            updateAndSort();
+        };
+
+        // --- Chart ---
+        let chartInstance = null;
+
+        function updateChart() {
+            const ctx = document.getElementById('scoringChart').getContext('2d');
+            const labels = teamsData.map(t => t.name); // Already sorted if updateAndSort called
+            const data = teamsData.map(t => t.total);
+
+            if (chartInstance) {
+                chartInstance.data.labels = labels;
+                chartInstance.data.datasets[0].data = data;
+                chartInstance.update();
+            } else {
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Баллы',
+                            data: data,
+                            backgroundColor: 'rgba(217, 119, 6, 0.6)', // amber-600
+                            borderColor: 'rgba(217, 119, 6, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', // Horizontal Bar Chart is better for 16 names
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initTeams();
+            calculateTotals();
+            teamsData.sort((a, b) => b.total - a.total); // Initial Sort
+            renderTable();
+            updateChart();
+            updateLobbyViz(); // Init Lobby Viz
+        });
+
+    </script>
+</body>
+</html>
